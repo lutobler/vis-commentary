@@ -49,6 +49,11 @@ local function get_lexer()
 end
 
 local function toggle_line_comment(lines, lnum, prefix, suffix)
+    if not lines or not lines[lnum] then return end
+
+    local stripped = lines[lnum]:match("^%s*(.+)") -- empty lines: nil
+    if not stripped then return end
+
     -- remove comment
     if lines[lnum]:match("^%s*(.+)"):sub(0, #prefix) == prefix then
         local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
