@@ -8,3 +8,9 @@
 | `gc`    | Toggle comment of the current selection in VISUAL mode. |
 
 Should you find bugs or unsupported languages, please report them.
+
+### Usage
+Add this to your `visrc.lua`:
+```
+require("vis-commentary")
+```
