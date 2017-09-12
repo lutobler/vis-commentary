@@ -20,6 +20,7 @@ local comment_string = {
     xml='<!--|-->', yaml='#'
 }
 
+-- escape all magic characters with a '%'
 local function esc(str)
     if not str then return "" end
     return (str:gsub('%%', '%%%%')
@@ -36,16 +37,10 @@ local function esc(str)
         :gsub('%?', '%%?'))
 end
 
-local function get_lexer()
-    local lex = vis.lexers
-    local found = false -- find the first lexer
-    local lex_name = nil
-    for _,l in pairs(lex.lexers) do
-        if found then break end
-        lex_name = l._NAME
-        found = true
-    end
-    return lex_name
+-- escape only '%' as it is the only magic character in string.format
+local function f_esc(str)
+    if not str then return "" end
+    return str:gsub('%%', '%%%%')
 end
 
 local function toggle_line_comment(lines, lnum, prefix, suffix)
@@ -62,7 +57,8 @@ local function toggle_line_comment(lines, lnum, prefix, suffix)
     -- add comment
     else
         if suffix ~= "" then suffix = " " .. suffix end
-        lines[lnum] = string.format(prefix .. " %s" .. suffix, lines[lnum])
+        local format_str = f_esc(prefix) .. " %s" .. f_esc(suffix)
+        lines[lnum] = string.format(format_str, lines[lnum])
     end
 end
 
@@ -72,7 +68,7 @@ vis:map(vis.modes.NORMAL, "gcc", function()
     local lnum = win.selection.line
     local col = win.selection.col
 
-    local comment = comment_string[get_lexer()]
+    local comment = comment_string[win.syntax]
     if not comment then return end
 
     local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
@@ -90,7 +86,7 @@ local function visual_f(i)
         local lnum = win.selection.line     -- line number of cursor
         local col = win.selection.col       -- column of cursor
 
-        local comment = comment_string[get_lexer()]
+        local comment = comment_string[win.syntax]
         if not comment then return end
 
         local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
@@ -119,5 +115,4 @@ end
 
 vis:map(vis.modes.VISUAL_LINE, "gc", visual_f(1), "Toggle comment on the selected lines")
 vis:map(vis.modes.VISUAL, "gc", visual_f(0), "Toggle comment on the selected lines")
-
 
