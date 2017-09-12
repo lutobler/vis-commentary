@@ -1,3 +1,10 @@
+--
+-- vis-commentary
+--
+-- comment strings and matching patterns are taken from:
+-- https://github.com/rgieseke/textadept/blob/9906c1fcec1c33c6a83c33dc7874669b5c6113f8/modules/textadept/editing.lua
+--
+
 local comment_string = {
     actionscript='//', ada='--', adpl='!', ansi_c='/*|*/', antlr='//', apl='#',
     applescript='--', asp='\'', autoit=';', awk='#', b_lang='//', bash='#',
@@ -37,28 +44,60 @@ local function esc(str)
         :gsub('%?', '%%?'))
 end
 
--- escape only '%' as it is the only magic character in string.format
-local function f_esc(str)
+-- escape '%'
+local function pesc(str)
     if not str then return "" end
     return str:gsub('%%', '%%%%')
 end
 
+local function comment_line(lines, lnum, prefix, suffix)
+    if suffix ~= "" then suffix = " " .. suffix end
+    lines[lnum] = string.gsub(lines[lnum],
+                              "(%s*)(.*)",
+                              "%1" .. pesc(prefix) .. " %2" .. pesc(suffix))
+end
+
+local function uncomment_line(lines, lnum, prefix, suffix)
+    local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
+    lines[lnum] = table.concat(table.pack(lines[lnum]:match(match_str)))
+end
+
+local function is_comment(line, prefix)
+    return (line:match("^%s*(.+)"):sub(0, #prefix) == prefix)
+end
+
 local function toggle_line_comment(lines, lnum, prefix, suffix)
     if not lines or not lines[lnum] then return end
-
-    local stripped = lines[lnum]:match("^%s*(.+)") -- empty lines: nil
-    if not stripped then return end
-
-    -- remove comment
-    if lines[lnum]:match("^%s*(.+)"):sub(0, #prefix) == prefix then
-        local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
-        lines[lnum] = table.concat(table.pack(lines[lnum]:match(match_str)))
-
-    -- add comment
+    if not lines[lnum]:match("^%s*(.+)") then return end -- ignore empty lines
+    if is_comment(lines[lnum], prefix) then
+        uncomment_line(lines, lnum, prefix, suffix)
     else
-        if suffix ~= "" then suffix = " " .. suffix end
-        local format_str = f_esc(prefix) .. " %s" .. f_esc(suffix)
-        lines[lnum] = string.format(format_str, lines[lnum])
+        comment_line(lines, lnum, prefix, suffix)
+    end
+end
+
+-- if one line inside the block is not a comment, comment the block.
+-- only uncomment, if every single line is comment.
+local function block_comment(lines, a, b, prefix, suffix)
+    local uncomment = true
+    for i=a,b do
+        if lines[i]:match("^%s*(.+)") and not is_comment(lines[i], prefix) then
+            uncomment = false
+        end
+    end
+
+    if uncomment then
+        for i=a,b do
+            if lines[i]:match("^%s*(.+)") then
+                uncomment_line(lines, i, prefix, suffix)
+            end
+        end
+    else
+        for i=a,b do
+            if lines[i]:match("^%s*(.+)") then
+                comment_line(lines, i, prefix, suffix)
+            end
+        end
     end
 end
 
@@ -67,10 +106,8 @@ vis:map(vis.modes.NORMAL, "gcc", function()
     local lines = win.file.lines
     local lnum = win.selection.line
     local col = win.selection.col
-
     local comment = comment_string[win.syntax]
     if not comment then return end
-
     local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
     if not prefix then return end
 
@@ -99,12 +136,7 @@ local function visual_f(i)
             local b = win.selection.line - i
 
             local lines = win.file.lines
-
-            for i = a,b do
-                if not lines[i]:match("^%s*$") then -- ignore empty lines
-                    toggle_line_comment(lines, i, prefix, suffix)
-                end
-            end
+            block_comment(lines, a, b, prefix, suffix)
 
             win:draw()
             win.selection:to(lnum, col)     -- restore cursor position
