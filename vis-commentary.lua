@@ -6,7 +6,7 @@
 --
 
 local comment_string = {
-    actionscript='//', ada='--', adpl='!', ansi_c='/*|*/', antlr='//', apl='#',
+    actionscript='//', ada='--', ansi_c='/*|*/', antlr='//', apdl='!', apl='#',
     applescript='--', asp='\'', autoit=';', awk='#', b_lang='//', bash='#',
     batch=':', bibtex='%', boo='#', chuck='//', cmake='#', coffeescript='#',
     context='%', cpp='//', crystal='#', csharp='//', css='/*|*/', cuda='//',
@@ -16,9 +16,9 @@ local comment_string = {
     gnuplot='#', go='//', groovy='//', gtkrc='#', haskell='--', html='<!--|-->',
     icon='#', idl='//', inform='!', ini='#', Io='#', java='//', javascript='//',
     json='/*|*/', jsp='//', latex='%', ledger='#', less='//', lilypond='%',
-    lisp=';', logtalk='%', lua='--', makefile='#', matlab='#', moonscript='--',
-    myrddin='//', nemerle='//', nsis='#', objective_c='//', pascal='//',
-    perl='#', php='//', pico8='//', pike='//', pkgbuild='#', prolog='%',
+    lisp=';', logtalk='%', lua='--', makefile='#', markdown='<!--|-->', matlab='#', 
+    moonscript='--', myrddin='//', nemerle='//', nsis='#', objective_c='//', 
+    pascal='//', perl='#', php='//', pico8='//', pike='//', pkgbuild='#', prolog='%',
     props='#', protobuf='//', ps='%', pure='//', python='#', rails='#', rc='#',
     rebol=';', rest='.. ', rexx='--', rhtml='<!--|-->', rstats='#', ruby='#',
     rust='//', sass='//', scala='//', scheme=';', smalltalk='"|"', sml='(*)',
