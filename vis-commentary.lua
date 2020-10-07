@@ -51,10 +51,9 @@ local function pesc(str)
 end
 
 local function comment_line(lines, lnum, prefix, suffix)
-    if suffix ~= "" then suffix = " " .. suffix end
     lines[lnum] = string.gsub(lines[lnum],
                               "(%s*)(.*)",
-                              "%1" .. pesc(prefix) .. " %2" .. pesc(suffix))
+                              "%1" .. pesc(prefix) .. "%2" .. pesc(suffix))
 end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
