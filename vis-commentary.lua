@@ -10,7 +10,7 @@ local comment_string = {
     applescript='--', asp='\'', autoit=';', awk='#', b_lang='//', bash='#',
     batch=':', bibtex='%', boo='#', chuck='//', cmake='#', coffeescript='#',
     context='%', cpp='//', crystal='#', csharp='//', css='/*|*/', cuda='//',
-    desktop='#', django='{#|#}', dmd='//', dockerfile='#', dot='//',
+    dart='//', desktop='#', django='{#|#}', dmd='//', dockerfile='#', dot='//',
     eiffel='--', elixir='#', erlang='%', faust='//', fish='#', forth='|\\',
     fortran='!', fsharp='//', gap='#', gettext='#', gherkin='#', glsl='//',
     gnuplot='#', go='//', groovy='//', gtkrc='#', haskell='--', html='<!--|-->',
