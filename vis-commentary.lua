@@ -104,24 +104,25 @@ end
 vis:map(vis.modes.NORMAL, "gcc", function()
     local win = vis.win
     local lines = win.file.lines
-    local lnum = win.selection.line
-    local col = win.selection.col
     local comment = comment_string[win.syntax]
     if not comment then return end
     local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
     if not prefix then return end
 
-    toggle_line_comment(lines, lnum, prefix, suffix)
+    for selection in win:selections_iterator() do
+        local lnum = selection.line
+        local col = selection.col
+
+        toggle_line_comment(lines, lnum, prefix, suffix)
+        selection:to(lnum, col)  -- restore cursor position
+    end
+
     win:draw()
-    win.selection:to(lnum, col)  -- restore cursor position
 end, "Toggle comment on a the current line")
 
 local function visual_f(i)
     return function()
         local win = vis.win
-        local r = win.selection.range
-        local lnum = win.selection.line     -- line number of cursor
-        local col = win.selection.col       -- column of cursor
 
         local comment = comment_string[win.syntax]
         if not comment then return end
@@ -129,19 +130,26 @@ local function visual_f(i)
         local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
         if not prefix then return end
 
-        if win.selection.anchored and r then
-            win.selection.pos = r.start
-            local a = win.selection.line
-            win.selection.pos = r.finish
-            local b = win.selection.line - i
+        for selection in win:selections_iterator() do
+            local r = selection.range
+            local lnum = selection.line     -- line number of cursor
+            local col = selection.col       -- column of cursor
 
-            local lines = win.file.lines
-            block_comment(lines, a, b, prefix, suffix)
+            if selection.anchored and r then
+                selection.pos = r.start
+                local a = selection.line
+                selection.pos = r.finish
+                local b = selection.line - i
 
-            win:draw()
-            win.selection:to(lnum, col)     -- restore cursor position
-            vis.mode = vis.modes.NORMAL     -- go to normal mode
+                local lines = win.file.lines
+                block_comment(lines, a, b, prefix, suffix)
+
+                selection:to(lnum, col)     -- restore cursor position
+            end
         end
+
+        win:draw()
+        vis.mode = vis.modes.NORMAL     -- go to normal mode
     end
 end
 
