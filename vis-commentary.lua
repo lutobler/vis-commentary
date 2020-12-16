@@ -123,6 +123,7 @@ end, "Toggle comment on a the current line")
 local function visual_f(i)
     return function()
         local win = vis.win
+        local lines = win.file.lines
 
         local comment = comment_string[win.syntax]
         if not comment then return end
@@ -141,7 +142,6 @@ local function visual_f(i)
                 sel.pos = r.finish
                 local b = sel.line - i
 
-                local lines = win.file.lines
                 block_comment(lines, a, b, prefix, suffix)
 
                 sel:to(lnum, col)     -- restore cursor position
