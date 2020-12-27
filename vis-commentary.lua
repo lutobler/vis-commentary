@@ -50,6 +50,12 @@ local function pesc(str)
     return str:gsub('%%', '%%%%')
 end
 
+function rtrim(s)
+    local n = #s
+    while n > 0 and s:find("^%s", n) do n = n - 1 end
+    return s:sub(1, n)
+ end
+
 local function comment_line(lines, lnum, prefix, suffix)
     if suffix ~= "" then suffix = " " .. suffix end
     lines[lnum] = string.gsub(lines[lnum],
@@ -59,7 +65,8 @@ end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
     local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
-    lines[lnum] = table.concat(table.pack(lines[lnum]:match(match_str)))
+    m = table.pack(lines[lnum]:match(match_str))
+    lines[lnum] = m[1] .. rtrim(m[2])
 end
 
 local function is_comment(line, prefix)
@@ -155,4 +162,3 @@ end
 
 vis:map(vis.modes.VISUAL_LINE, "gc", visual_f(1), "Toggle comment on the selected lines")
 vis:map(vis.modes.VISUAL, "gc", visual_f(0), "Toggle comment on the selected lines")
-
