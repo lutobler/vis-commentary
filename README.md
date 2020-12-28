@@ -3,9 +3,9 @@
 `vis-commentary` aims to port Tim Pope's [vim-commentary](https://github.com/tpope/vim-commentary) to [vis](https://github.com/martanne/vis).
 
 ### Installation
-Add the Lua file to you Vis path (`~/.config/vis`) and add this to your `visrc.lua`:
+Clone the repo to your vis plugins directory (`~/.config/vis/plugins`) and add this to your `visrc.lua`:
 ```
-require("vis-commentary")
+require("plugins/vis-commentary")
 ```
 
 ### Usage
