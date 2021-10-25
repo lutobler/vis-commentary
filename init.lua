@@ -1,9 +1,6 @@
 --
 -- vis-commentary
 --
--- comment strings and matching patterns are taken from:
--- https://github.com/rgieseke/textadept/blob/9906c1fcec1c33c6a83c33dc7874669b5c6113f8/modules/textadept/editing.lua
---
 
 local comment_string = {
     actionscript='//', ada='--', ansi_c='/*|*/', antlr='//', apdl='!', apl='#',
@@ -11,20 +8,20 @@ local comment_string = {
     batch=':', bibtex='%', boo='#', chuck='//', cmake='#', coffeescript='#',
     context='%', cpp='//', crystal='#', csharp='//', css='/*|*/', cuda='//',
     dart='//', desktop='#', django='{#|#}', dmd='//', dockerfile='#', dot='//',
-    eiffel='--', elixir='#', erlang='%', faust='//', fish='#', forth='|\\',
-    fortran='!', fsharp='//', gap='#', gettext='#', gherkin='#', glsl='//',
-    gnuplot='#', go='//', groovy='//', gtkrc='#', haskell='--', html='<!--|-->',
-    icon='#', idl='//', inform='!', ini='#', Io='#', java='//', javascript='//',
-    json='/*|*/', jsp='//', latex='%', ledger='#', less='//', lilypond='%',
-    lisp=';', logtalk='%', lua='--', makefile='#', markdown='<!--|-->', matlab='#', 
-    moonscript='--', myrddin='//', nemerle='//', nsis='#', objective_c='//', 
-    pascal='//', perl='#', php='//', pico8='//', pike='//', pkgbuild='#', prolog='%',
-    props='#', protobuf='//', ps='%', pure='//', python='#', rails='#', rc='#',
-    rebol=';', rest='.. ', rexx='--', rhtml='<!--|-->', rstats='#', ruby='#',
-    rust='//', sass='//', scala='//', scheme=';', smalltalk='"|"', sml='(*)',
-    snobol4='#', sql='#', tcl='#', tex='%', text='', toml='#', vala='//',
-    vb='\'', vbscript='\'', verilog='//', vhdl='--', wsf='<!--|-->',
-    xml='<!--|-->', yaml='#'
+    eiffel='--', elixir='#', erlang='%', faust='//', fennel=';;', fish='#',
+    forth='|\\', fortran='!', fsharp='//', gap='#', gettext='#', gherkin='#',
+    glsl='//', gnuplot='#', go='//', groovy='//', gtkrc='#', haskell='--',
+    html='<!--|-->', icon='#', idl='//', inform='!', ini='#', Io='#',
+    java='//', javascript='//', json='/*|*/', jsp='//', latex='%', ledger='#',
+    less='//', lilypond='%', lisp=';', logtalk='%', lua='--', makefile='#',
+    markdown='<!--|-->', matlab='#', moonscript='--', myrddin='//',
+    nemerle='//', nsis='#', objective_c='//', pascal='//', perl='#', php='//',
+    pico8='//', pike='//', pkgbuild='#', prolog='%', props='#', protobuf='//',
+    ps='%', pure='//', python='#', rails='#', rc='#', rebol=';', rest='.. ',
+    rexx='--', rhtml='<!--|-->', rstats='#', ruby='#', rust='//', sass='//',
+    scala='//', scheme=';', smalltalk='"|"', sml='(*)', snobol4='#', sql='#',
+    tcl='#', tex='%', text='', toml='#', vala='//', vb='\'', vbscript='\'',
+    verilog='//', vhdl='--', wsf='<!--|-->', xml='<!--|-->', yaml='#'
 }
 
 -- escape all magic characters with a '%'
