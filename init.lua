@@ -21,7 +21,7 @@ local comment_string = {
     rexx='--', rhtml='<!--|-->', rstats='#', ruby='#', rust='//', sass='//',
     scala='//', scheme=';', smalltalk='"|"', sml='(*)', snobol4='#', sql='#',
     tcl='#', tex='%', text='', toml='#', vala='//', vb='\'', vbscript='\'',
-    verilog='//', vhdl='--', wsf='<!--|-->', xml='<!--|-->', yaml='#'
+    verilog='//', vhdl='--', wsf='<!--|-->', xml='<!--|-->', yaml='#', zig='//'
 }
 
 -- escape all magic characters with a '%'
