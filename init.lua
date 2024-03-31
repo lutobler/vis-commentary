@@ -22,7 +22,7 @@ local comment_string = {
     scala='//', scheme=';', smalltalk='"|"', sml='(*)', snobol4='#', sql='#',
     tcl='#', tex='%', text='', toml='#', vala='//', vb='\'', vbscript='\'',
     verilog='//', vhdl='--', wsf='<!--|-->', xml='<!--|-->', yaml='#', zig='//',
-    nim='#', julia='#', rpmspec='#'
+    nim='#', julia='#', rpmspec='#', caml='(*|*)'
 }
 
 -- escape all magic characters with a '%'
