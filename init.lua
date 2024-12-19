@@ -106,6 +106,35 @@ local function block_comment(lines, a, b, prefix, suffix)
     end
 end
 
+vis:operator_new("gc", function(file, range, pos)
+    local comment = comment_string[vis.win.syntax]
+    local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
+    if not prefix then return end
+
+    local c = 0
+    local i = 1
+    local a = -1
+    local b = -1
+    for line in file:lines_iterator() do
+        local line_start = c
+        local line_finish = c + #line + 1
+        if line_start < range.finish and line_finish > range.start then
+            if a == -1 then
+                a = i
+                b = i
+            else
+                b = i
+            end
+        end
+        c = line_finish
+        if c > range.finish then break end
+        i = i + 1
+    end
+    block_comment(file.lines, a, b, prefix, suffix)
+
+    return range.start
+end, "Toggle comment on selected lines")
+
 vis:map(vis.modes.NORMAL, "gcc", function()
     local win = vis.win
     local lines = win.file.lines
@@ -125,38 +154,3 @@ vis:map(vis.modes.NORMAL, "gcc", function()
     win:draw()
 end, "Toggle comment on a the current line")
 
-local function visual_f(i)
-    return function()
-        local win = vis.win
-        local lines = win.file.lines
-
-        local comment = comment_string[win.syntax]
-        if not comment then return end
-
-        local prefix, suffix = comment:match('^([^|]+)|?([^|]*)$')
-        if not prefix then return end
-
-        for sel in win:selections_iterator() do
-            local r = sel.range
-            local lnum = sel.line     -- line number of cursor
-            local col = sel.col       -- column of cursor
-
-            if sel.anchored and r then
-                sel.pos = r.start
-                local a = sel.line
-                sel.pos = r.finish
-                local b = sel.line - i
-
-                block_comment(lines, a, b, prefix, suffix)
-
-                sel:to(lnum, col)     -- restore cursor position
-            end
-        end
-
-        win:draw()
-        vis.mode = vis.modes.NORMAL     -- go to normal mode
-    end
-end
-
-vis:map(vis.modes.VISUAL_LINE, "gc", visual_f(1), "Toggle comment on the selected lines")
-vis:map(vis.modes.VISUAL, "gc", visual_f(0), "Toggle comment on the selected lines")
