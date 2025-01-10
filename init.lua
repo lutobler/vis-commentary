@@ -2,6 +2,8 @@
 -- vis-commentary
 --
 
+local vis = _G.vis
+
 local comment_string = {
     actionscript='//', ada='--', ansi_c='/*|*/', antlr='//', apdl='!', apl='#',
     applescript='--', asp='\'', autoit=';', awk='#', b_lang='//', bash='#',
@@ -48,7 +50,7 @@ local function pesc(str)
     return str:gsub('%%', '%%%%')
 end
 
-function rtrim(s)
+local function rtrim(s)
     local n = #s
     while n > 0 and s:find("^%s", n) do n = n - 1 end
     return s:sub(1, n)
@@ -63,7 +65,7 @@ end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
     local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
-    m = table.pack(lines[lnum]:match(match_str))
+    local m = table.pack(lines[lnum]:match(match_str))
     lines[lnum] = m[1] .. rtrim(m[2])
 end
 
