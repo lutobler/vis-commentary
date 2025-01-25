@@ -28,18 +28,7 @@ local comment_string = {
 -- escape all magic characters with a '%'
 local function esc(str)
     if not str then return "" end
-    return (str:gsub('%%', '%%%%')
-        :gsub('^%^', '%%^')
-        :gsub('%$$', '%%$')
-        :gsub('%(', '%%(')
-        :gsub('%)', '%%)')
-        :gsub('%.', '%%.')
-        :gsub('%[', '%%[')
-        :gsub('%]', '%%]')
-        :gsub('%*', '%%*')
-        :gsub('%+', '%%+')
-        :gsub('%-', '%%-')
-        :gsub('%?', '%%?'))
+    return (str:gsub('[[.+*?$^()%%%]-]', '%%%0'))
 end
 
 -- escape '%'
