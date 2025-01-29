@@ -33,20 +33,12 @@ local function esc(str)
     return (str:gsub('[[.+*?$^()%%%]-]', '%%%0'))
 end
 
--- escape '%'
-local function pesc(str)
-    if not str then return "" end
-    return str:gsub('%%', '%%%%')
-end
-
 local Gsub = string.gsub
 
 local function comment_line(lines, lnum, prefix, suffix)
     if suffix ~= "" then suffix = " " .. suffix end
-    lines[lnum] = Gsub(lines[lnum],
-                              "(%s*)(.*)",
-                              "%1" .. pesc(prefix) .. " %2")
-                  .. suffix
+    local indent, content = lines[lnum]:match("^(%s*)(.*)")
+    lines[lnum] = indent .. prefix .. " " .. content .. suffix
 end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
