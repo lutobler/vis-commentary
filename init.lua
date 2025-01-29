@@ -52,9 +52,10 @@ local function is_comment(line, prefix)
 end
 
 local function toggle_line_comment(lines, lnum, prefix, suffix)
-    if not lines or not lines[lnum] then return end
-    if not lines[lnum]:match("^%s*(.+)") then return end -- ignore empty lines
-    if is_comment(lines[lnum], prefix) then
+    local line = lines and lines[lnum]
+    if not line then return end
+    if line:match"^%s*$" then return end -- ignore empty lines
+    if is_comment(line, prefix) then
         uncomment_line(lines, lnum, prefix, suffix)
     else
         comment_line(lines, lnum, prefix, suffix)
