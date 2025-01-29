@@ -65,26 +65,18 @@ end
 -- if one line inside the block is not a comment, comment the block.
 -- only uncomment, if every single line is comment.
 local function block_comment(lines, a, b, prefix, suffix)
-    local uncomment = true
+    local modify_line = uncomment_line
     for i=a,b do
         local line = lines[i]
         if line:match("^%s*(.+)") and not is_comment(line, prefix) then
-            uncomment = false
+            modify_line = comment_line
             break
         end
     end
 
-    if uncomment then
-        for i=a,b do
-            if lines[i]:match("^%s*(.+)") then
-                uncomment_line(lines, i, prefix, suffix)
-            end
-        end
-    else
-        for i=a,b do
-            if lines[i]:match("^%s*(.+)") then
-                comment_line(lines, i, prefix, suffix)
-            end
+    for i=a,b do
+        if lines[i]:match("^%s*(.+)") then
+            modify_line(lines, i, prefix, suffix)
         end
     end
 end
