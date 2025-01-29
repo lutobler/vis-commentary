@@ -41,10 +41,6 @@ end
 
 local Gsub = string.gsub
 
-local function rtrim(s)
-	return ( Gsub(s, "%s+$","") )
-end
-
 local function comment_line(lines, lnum, prefix, suffix)
     if suffix ~= "" then suffix = " " .. suffix end
     lines[lnum] = string.gsub(lines[lnum],
@@ -53,9 +49,8 @@ local function comment_line(lines, lnum, prefix, suffix)
 end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
-    local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
-    local m = table.pack(lines[lnum]:match(match_str))
-    lines[lnum] = m[1] .. rtrim(m[2])
+    local patt = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix) .. "$"
+    lines[lnum] = Gsub(lines[lnum], patt, "%1%2")
 end
 
 local function is_comment(line, prefix)
