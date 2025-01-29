@@ -42,7 +42,8 @@ local function comment_line(lines, lnum, prefix, suffix)
 end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
-    local patt = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix) .. "$"
+    if suffix~="" then suffix = esc(suffix) end
+    local patt = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. suffix .. "$"
     lines[lnum] = Gsub(lines[lnum], patt, "%1%2")
 end
 
