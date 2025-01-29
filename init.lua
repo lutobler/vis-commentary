@@ -33,29 +33,18 @@ local function esc(str)
     return (str:gsub('[[.+*?$^()%%%]-]', '%%%0'))
 end
 
--- escape '%'
-local function pesc(str)
-    if not str then return "" end
-    return str:gsub('%%', '%%%%')
-end
-
-local function rtrim(s)
-    local n = #s
-    while n > 0 and s:find("^%s", n) do n = n - 1 end
-    return s:sub(1, n)
- end
+local Gsub = string.gsub
 
 local function comment_line(lines, lnum, prefix, suffix)
     if suffix ~= "" then suffix = " " .. suffix end
-    lines[lnum] = string.gsub(lines[lnum],
-                              "(%s*)(.*)",
-                              "%1" .. pesc(prefix) .. " %2" .. pesc(suffix))
+    local indent, content = lines[lnum]:match("^(%s*)(.*)")
+    lines[lnum] = indent .. prefix .. " " .. content .. suffix
 end
 
 local function uncomment_line(lines, lnum, prefix, suffix)
-    local match_str = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. esc(suffix)
-    local m = table.pack(lines[lnum]:match(match_str))
-    lines[lnum] = m[1] .. rtrim(m[2])
+    if suffix~="" then suffix = esc(suffix) end
+    local patt = "^(%s*)" .. esc(prefix) .. "%s?(.*)" .. suffix .. "$"
+    lines[lnum] = Gsub(lines[lnum], patt, "%1%2")
 end
 
 local function is_comment(line, prefix)
@@ -63,9 +52,10 @@ local function is_comment(line, prefix)
 end
 
 local function toggle_line_comment(lines, lnum, prefix, suffix)
-    if not lines or not lines[lnum] then return end
-    if not lines[lnum]:match("^%s*(.+)") then return end -- ignore empty lines
-    if is_comment(lines[lnum], prefix) then
+    local line = lines and lines[lnum]
+    if not line then return end
+    if line:match"^%s*$" then return end -- ignore empty lines
+    if is_comment(line, prefix) then
         uncomment_line(lines, lnum, prefix, suffix)
     else
         comment_line(lines, lnum, prefix, suffix)
@@ -75,24 +65,18 @@ end
 -- if one line inside the block is not a comment, comment the block.
 -- only uncomment, if every single line is comment.
 local function block_comment(lines, a, b, prefix, suffix)
-    local uncomment = true
+    local modify_line = uncomment_line
     for i=a,b do
-        if lines[i]:match("^%s*(.+)") and not is_comment(lines[i], prefix) then
-            uncomment = false
+        local line = lines[i]
+        if line:match("^%s*(.+)") and not is_comment(line, prefix) then
+            modify_line = comment_line
+            break
         end
     end
 
-    if uncomment then
-        for i=a,b do
-            if lines[i]:match("^%s*(.+)") then
-                uncomment_line(lines, i, prefix, suffix)
-            end
-        end
-    else
-        for i=a,b do
-            if lines[i]:match("^%s*(.+)") then
-                comment_line(lines, i, prefix, suffix)
-            end
+    for i=a,b do
+        if lines[i]:match("^%s*(.+)") then
+            modify_line(lines, i, prefix, suffix)
         end
     end
 end
