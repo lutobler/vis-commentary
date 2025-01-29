@@ -67,8 +67,10 @@ end
 local function block_comment(lines, a, b, prefix, suffix)
     local uncomment = true
     for i=a,b do
-        if lines[i]:match("^%s*(.+)") and not is_comment(lines[i], prefix) then
+        local line = lines[i]
+        if line:match("^%s*(.+)") and not is_comment(line, prefix) then
             uncomment = false
+            break
         end
     end
 
